@@ -127,7 +127,6 @@
       this.refresh();
     },
     processSchema: function (schema, ns = null, rowData = null) {
-      console.log(schema);
       if (rowData === null) rowData = [];
       Object.keys(schema).forEach(function (fieldKey, idx) {
         var cns = ns ? ns + '.' + fieldKey : fieldKey;
@@ -182,15 +181,23 @@
         };
       });
       this.setImmutableStore(res);
+      var postData = cleanPostData(JSON.parse(JSON.stringify(this.schemaStore)));
+      console.log(postData);
       $.ajax({
         type: 'POST',
         url: this.settings.save_url,
-        data: this.schemaStore,
+        data: postData,
         dataType: 'json',
-        success: function () {
-          alert('Saved!');
+        success: function (response) {
+          if (response.ok) {
+            alert('Saved!');
+          }
+          else {
+            console.log(response);
+            alert('save error: '+response.error);
+          }
         },
-        error: function () { alert('save error'); }
+        error: function (e) { console.log(e); alert('save error'); }
       });
     },
     deleteRows: function () {
@@ -240,5 +247,15 @@
       case false: return Drupal.t('No');
       default: return params.value ? params.value : '-';
     }
+  }
+  function cleanPostData(data) {
+    var ret = {};
+    Object.keys(data).forEach(function (key) {
+      ret[key] = { display: data[key].display };
+      if (data[key].children) {
+        ret[key].children = cleanPostData(data[key].children);
+      }
+    });
+    return ret;
   }
 })(jQuery);

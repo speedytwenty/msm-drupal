@@ -152,7 +152,7 @@ function msm_settings_form($form, &$form_state, $server_id = 'default', $client_
       '#rows' => 30,
     );
   }
-  $form['actions'] = array('#type' => 'actions');
+  $form['actions'] = array('#type' => 'actions', '#weight' => -10000);
   $form['actions']['submit'] = array(
     '#type' => 'submit',
     '#value' => t('Update System Settings'),

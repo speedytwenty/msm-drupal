@@ -6,7 +6,12 @@ function msm_eval_form($form, &$form_state, array $collection) {
     'dependencies' => array(),
   );
   if (!empty($collection['source'])) {
-    $source = msm_request(sprintf('collection/%s', $collection['source']));
+    $source = msm_get(
+      sprintf('collection/%s', $collection['source']),
+      [],
+      $collection['server_id'],
+      $collection['client_id']
+    );
   }
   $form['actions'] = array(
     '#type' => 'actions',
@@ -71,7 +76,14 @@ function msm_eval_form($form, &$form_state, array $collection) {
   if (!empty($collection['source'])) {
     $help[] = array(
       'label' => 'source',
-      'value' => l($source['collectionName'], sprintf('admin/msm/col/%s', $collection['source'])),
+      'value' => l(
+        $source['collectionName'],
+        sprintf('admin/msm/col/%s', msm_client_server_collection_id(
+          $collection['source'],
+          $collection['server_id'],
+          $collection['client_id']
+        ))
+      ),
       'description' => t('The source collection object.'),
     );
     $help[] = array(

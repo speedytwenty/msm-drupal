@@ -562,18 +562,16 @@ function msm_collection_options($server_id, $client_id, $grouped = FALSE, $datab
     if ($database) $options['query']['databaseName'] = check_plain($database);
     $result = msm_get('collections', $options, $server_id, $client_id);
     foreach ($result['collections'] AS $col) {
-      if ($col['enabled']) {
-        $text = t('@title (@database:@collectionName)', array(
-          '@title' => $col['name'],
-          '@database' => $col['databaseName'],
-          '@collectionName' => $col['collectionName'],
-        ));
-        $options['ungrouped'][$col['_id']] = $text;
-        if (!isset($options[$col['databaseName']])) {
-          $options[$col['databaseName']] = array();
-        }
-        $options['grouped'][$col['databaseName']][$col['_id']] = $text;
+      $text = t('@title (@database:@collectionName)', array(
+        '@title' => $col['name'],
+        '@database' => $col['databaseName'],
+        '@collectionName' => $col['collectionName'],
+      ));
+      $options['ungrouped'][$col['_id']] = $text;
+      if (!isset($options[$col['databaseName']])) {
+        $options[$col['databaseName']] = array();
       }
+      $options['grouped'][$col['databaseName']][$col['_id']] = $text;
     }
   }
   return $grouped ? $options['grouped'] : $options['ungrouped'];
